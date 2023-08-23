@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+  <!-- Coding by CodingLab | www.codinglabweb.com -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="style.css">
+    
+
+    <!----===== Boxicons CSS ===== -->
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!--<title>Dashboard Sidebar Menu</title>--> 
+</head>
+<body>
+    <nav class="sidebar close">
+        <header>
+            <div class="auth-buttons">
+                <button class="btn auth-button">Login</button>
+                <button class="btn auth-button">Signup</button>
+            </div>
+        
+            <div class="image-text">
+                <span class="image">
+                    <img src="logo.png" alt="">
+                </span>
+        
+                <div class="text logo-text">
+                    <span class="name">Codinglab</span>
+                    <span class="profession">Web developer</span>
+                </div>
+            </div>
+        
+            <i class='bx bx-chevron-right toggle'></i>
+        </header>
+        
+
+        <div class="menu-bar">
+            <div class="menu">
+
+                <li class="search-box">
+                    <i class='bx bx-search icon'></i>
+                    <input type="text" placeholder="Search...">
+                </li>                
+
+                <ul class="menu-links">
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class='bx bx-check icon' ></i>
+                            <span class="text nav-text">Prod</span>
+                        </a>
+                    </li>
+                                           
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class='bx bx-comment icon'></i>
+                            <span class="text nav-text">Feedback</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class='bx bx-bell icon'></i>
+                            <span class="text nav-text">Notifications</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class='bx bx-help-circle icon' ></i>
+                            <span class="text nav-text">Help</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class='bx bx-heart icon' ></i>
+                            <span class="text nav-text">Likes</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="social-links">
+                <a href="#" target="_blank" rel="nofollow">
+                    <img src="Youtube.png" alt="Youtube">
+                </a>
+                <a href="#" target="_blank" rel="nofollow">
+                    <img src="Twitter.png" alt="Twitter">
+                </a>
+                <a href="#" target="_blank" rel="nofollow">
+                    <img src="Insta.png" alt="Instagram">
+                </a>
+                <a href="#" target="_blank" rel="nofollow">
+                    <img src="Linkedin.png" alt="Linkedin">
+                </a>
+            </div>
+
+            <div class="bottom-content">
+                <li class="">
+                    <a href="#">
+                        <i class='bx bx-log-out icon' ></i>
+                        <span class="text nav-text">Logout</span>
+                    </a>
+                </li>
+
+                <li class="mode">
+                    <div class="sun-moon">
+                        <i class='bx bx-moon icon moon'></i>
+                        <i class='bx bx-sun icon sun'></i>
+                    </div>
+                    <span class="mode-text text">Dark mode</span>
+
+                    <div class="toggle-switch">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+                
+            </div>
+        </div>
+
+    </nav>
+    <div class="search-container">
+        <div class="search-box transparent">
+            <i class='bx bx-search icon'></i>
+            <input type="text" id="search-input" placeholder="Search...">
+        </div>
+    </div>
+    <div class="button-container">
+        <button class="btn search-button" id="search-button">Search</button>
+        <button class="btn search-button" id="expand-button">+</button>
+        <div class="expanded-buttons" id="expanded-buttons">
+            <button class="btn search-button">Save</button>
+            <button class="btn search-button">Reset</button>
+            <button class="btn search-button">Remove</button>
+            <a href="SearchTool.xlsm" download>Download Excel</a>
+        </div>
+    </div>
+    <div class="search-results" id="search-results"></div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const body = document.querySelector('body'),
+                sidebar = body.querySelector('nav'),
+                toggle = body.querySelector(".toggle"),
+                modeSwitch = body.querySelector(".toggle-switch"),
+                modeText = body.querySelector(".mode-text"),
+                expandButton = body.querySelector("#expand-button"),
+                expandedButtons = body.querySelector("#expanded-buttons");
+                const searchInput = document.getElementById("search-input");
+                const searchResultsContainer = document.getElementById("search-results");
+                const searchButton = document.getElementById("search-button");
+    
+            toggle.addEventListener("click", () => {
+                sidebar.classList.toggle("close");
+            });
+    
+            modeSwitch.addEventListener("click", () => {
+                body.classList.toggle("dark");
+                if (body.classList.contains("dark")) {
+                    modeText.innerText = "Light mode";
+                } else {
+                    modeText.innerText = "Dark mode";
+                }
+            });
+    
+            expandButton.addEventListener("click", () => {
+                expandedButtons.classList.toggle("show");
+                if (expandButton.textContent === "+") {
+                    expandButton.textContent = "-";
+                } else {
+                    expandButton.textContent = "+";
+                }
+            });
+
+            searchButton.addEventListener("click", () => {
+                const query = searchInput.value.trim();
+                if (query !== "") {
+                    fetch('/search', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'search=' + encodeURIComponent(query),
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        // Update the search results container with the results
+                        searchResultsContainer.innerHTML = data;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+color@@black
+fruit@@apple
+car@@python
+Color@@red
