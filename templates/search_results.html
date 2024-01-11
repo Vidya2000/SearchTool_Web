@@ -1,0 +1,7 @@
+{% if results %}
+  {% for result in results %}
+    {{ result['result'] }}
+  {% endfor %}
+{% else %}
+  No results found.
+{% endif %}
