@@ -23,6 +23,73 @@
     --tran-05: all 0.3s ease;
 }
 
+/* Responsive Styles */
+@media only screen and (max-width: 768px) {
+    /* Adjustments for smaller screens (e.g., tablets) */
+    .sidebar {
+        width: 100%;
+    }
+
+    .sidebar.close {
+        width: 100%;
+    }
+
+    .sidebar.close ~ .home {
+        width: 100%;
+        left: 0;
+    }
+
+    .search-container {
+        width: 80%;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    /* Adjustments for smaller screens (e.g., mobiles) */
+    body {
+        margin-top: 0;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        height: 100%;
+        width: 250px;
+        padding: 10px 14px;
+        background: var(--sidebar-color);
+        transition: var(--tran-05);
+        z-index: 100;
+    }
+
+    .sidebar.close ~ .home {
+        left: 0;
+        width: 100%;
+    }
+
+    .search-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .header {
+        padding: 10px;
+    }
+
+    .button-container {
+        top: 280px;
+        right: 10%;
+    }
+
+    .auth-buttons {
+        left: 10px;
+    }
+
+    .expanded-buttons {
+        top: 30px;
+    }
+}
+
 body {
     /* Other CSS properties */
     background-size: 100% auto;
