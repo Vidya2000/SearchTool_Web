@@ -5,16 +5,17 @@ import json
 import re
 from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 app = Flask(__name__)
 
 # Database configuration
-DB_HOST = os.getenv('DB_HOST')
-DB_PORT = int(os.getenv('DB_PORT'))
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_NAME = os.getenv('DB_NAME')
+DB_HOST = 'searchtool-vidyagms9634-891a.a.aivencloud.com'
+DB_PORT = 19887
+DB_USER = 'avnadmin'
+DB_PASSWORD = 'AVNS_2iOj7NTyvvRq3T2Yte0'
+DB_NAME = 'defaultdb'
+SSL_MODE = 'REQUIRED'
 
 # Establish a connection to the database
 db = pymysql.connect(
@@ -23,6 +24,7 @@ db = pymysql.connect(
     user=DB_USER,
     password=DB_PASSWORD,
     db=DB_NAME,
+    # ssl-mode= ssl-mode,
     charset='utf8mb4',
     cursorclass=pymysql.cursors.DictCursor
 )
