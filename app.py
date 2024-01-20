@@ -35,14 +35,22 @@ def hello_world():
 
 @app.route('/perform_search', methods=['GET', 'POST'])
 def perform_search():
-    query = request.form.get('search')
+    search_query = request.form.get('search')
     results = []
 
     try:
-        if query is not None:
-            # Search in the database for records with state 'Added' and not 'Deleted'
+        if search_query is not None:
+            # Split the search query into keywords
+            keywords = search_query.split()
+
+            # SQL query to search for each keyword
+            query_conditions = " OR ".join(["query LIKE %s" for _ in keywords])
+            query_params = ['%' + keyword + '%' for keyword in keywords]
+
+            # Search in the db for records with state 'Added' and not 'Deleted'
             cursor = db.cursor()
-            cursor.execute("SELECT result FROM data WHERE query LIKE %s AND state != 'Deleted'", ('%' + query + '%',))
+            sql_query = f"SELECT result FROM data WHERE ({query_conditions}) AND state != 'Deleted'"
+            cursor.execute(sql_query, query_params)
             results = cursor.fetchall()
     except Exception as e:
         print(f"An error occurred: {str(e)}")
@@ -98,9 +106,10 @@ def edit_results():
         result = cursor.fetchone()['result']
         
         if request.method == 'POST':
-            # Update the result in the 'data' table
+            # Update the query and result in the 'data' table
+            modified_query = request.form['modified_query']
             modified_results = request.form['modified_results']
-            cursor.execute("UPDATE data SET result = %s WHERE LOWER(query) = LOWER(%s)", (modified_results, query))
+            cursor.execute("UPDATE data SET query = %s, result = %s WHERE LOWER(query) = LOWER(%s)", (modified_query, modified_results, query))
             db.commit()
 
             # Check if there's an entry in 'search_history_new' table
@@ -109,9 +118,9 @@ def edit_results():
 
             # Update or insert into 'search_history_new' table
             if existing_entry:
-                cursor.execute("UPDATE search_history_new SET results = %s WHERE LOWER(query) = LOWER(%s)", (modified_results, query))
+                cursor.execute("UPDATE search_history_new SET query = %s, results = %s WHERE LOWER(query) = LOWER(%s)", (modified_query, modified_results, query))
             else:
-                cursor.execute("INSERT INTO search_history_new (query, results, state) VALUES (%s, %s, 'Added')", (query, modified_results))
+                cursor.execute("INSERT INTO search_history_new (query, results, state) VALUES (%s, %s, 'Added')", (modified_query, modified_results))
             
             db.commit()
 
@@ -122,6 +131,7 @@ def edit_results():
         cursor.close()
 
     return render_template('edit_results.html', query=query, result=result)
+
 
 
 @app.route('/remove_search', methods=['POST'])

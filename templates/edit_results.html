@@ -63,12 +63,14 @@
     
     <div class="form-container">
         <form method="post" action="{{ url_for('edit_results', query=query) }}">
+            <label for="modified_query">Modified Query:</label>
+            <input type="text" id="modified_query" name="modified_query" value="{{ query }}" required>
+            
             <label for="modified_results">Modified Results:</label>
             <textarea id="modified_results" name="modified_results" rows="4" cols="50">{{ result }}</textarea>
             <br>
             <input type="submit" name="save_to_search_history" value="Save">
         </form>
     </div>
-    
 </body>
 </html>

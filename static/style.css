@@ -25,41 +25,43 @@
 
 /* Responsive Styles */
 @media only screen and (max-width: 768px) {
-    /* Adjustments for smaller screens (e.g., tablets) */
     .sidebar {
         width: 100%;
-    }
-
-    .sidebar.close {
-        width: 100%;
+        left: 0;
     }
 
     .sidebar.close ~ .home {
-        width: 100%;
         left: 0;
+        width: 100%;
     }
 
     .search-container {
         width: 80%;
     }
+
+    .button-container {
+        top: auto;
+        right: 5%;
+    }
+
+    .auth-buttons {
+        left: 5px;
+    }
+
+    .expanded-buttons {
+        top: 20px;
+    }
 }
 
 @media only screen and (max-width: 480px) {
-    /* Adjustments for smaller screens (e.g., mobiles) */
     body {
         margin-top: 0;
     }
 
     .sidebar {
-        position: fixed;
-        top: 0;
         left: -250px;
-        height: 100%;
         width: 250px;
-        padding: 10px 14px;
-        background: var(--sidebar-color);
         transition: var(--tran-05);
-        z-index: 100;
     }
 
     .sidebar.close ~ .home {
@@ -77,7 +79,7 @@
     }
 
     .button-container {
-        top: 280px;
+        top: auto;
         right: 10%;
     }
 
@@ -88,6 +90,32 @@
     .expanded-buttons {
         top: 30px;
     }
+}
+
+/* ... (unchanged) */
+
+.sidebar {
+    width: 20%;
+}
+
+.sidebar.close {
+    width: 10%;
+}
+
+.sidebar .text {
+    font-size: 2vw;
+}
+
+.header .image-text .name {
+    font-size: 2em;
+}
+
+.header .image-text .profession {
+    font-size: 1.6em;
+}
+
+.home .text {
+    font-size: 3vw;
 }
 
 body {
