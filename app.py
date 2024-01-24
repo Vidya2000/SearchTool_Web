@@ -133,7 +133,6 @@ def edit_results():
     return render_template('edit_results.html', query=query, result=result)
 
 
-
 @app.route('/remove_search', methods=['POST'])
 def remove_search():
     query = request.form.get('query')
@@ -149,9 +148,15 @@ def remove_search():
 
     return redirect(url_for('hello_world', removed=True))
 
+
 @app.route('/reset', methods=['POST'])
 def reset_website():
     return redirect(url_for('hello_world', reset=True))
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=6061)

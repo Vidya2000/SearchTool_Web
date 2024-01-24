@@ -522,32 +522,33 @@ body.dark .home .text{
 }
 
 .auth-buttons {
-    display: flex; /* Display buttons side by side */
-    align-items: center; /* Center vertically */
+    display: flex; 
+    align-items : center; 
     position: absolute;
     top: 50%;
-    transform: translateY(-50%); /* Vertically center the buttons */
-    left: 1280px; /* Adjust the right spacing as needed */
-}
+    transform: translateY(-50%); 
+    left: 90vw; /* Adjust the left value to move the button further to the right */
+} 
 
 .auth-button {
     padding: 8px 16px;
-    background: rgba(0, 0, 0, 0.4); /* Darken the background on hover */
+    background: rgba(0, 0, 0, 0.4);
     border: none;
     color: white;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    margin-left: 10px; /* Add margin between buttons */
+    margin-left: 5px; 
+    text-decoration: none;
 }
 
 .auth-button:first-child {
-    margin-left: 0; /* No margin for the first button */
+    margin-left: 0; 
 }
 
 .auth-button:hover {
-    background: rgba(0, 0, 0, 0.6); /* Darken the background on hover */
-}
+    background: rgba(0, 0, 0, 0.6); /*Darken the background on hover*/
+} 
 
 /* Add borders to navigation bar buttons */
 /* Add square borders to navigation bar buttons */
