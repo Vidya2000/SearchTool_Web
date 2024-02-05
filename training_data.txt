@@ -1,0 +1,4 @@
+add vector: add vector @@tssupdate -add_vector -x -y -z
+update vector: update vector@@tssupdate -update_vector -x -y -z
+delete vector: delete vector@@tssupdate -delete_vector -x -y -z
+getting started: getting started @@ flowdiagram.pdf
