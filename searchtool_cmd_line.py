@@ -12,10 +12,16 @@ def read_training_data(file_path):
 
 # Function to convert input question to command
 def convert_to_command(question, training_data):
+    matching_commands = []
+    
     for key, value in training_data.items():
-        if re.search(rf'\b{key}\b', question, re.IGNORECASE):
-            return value
-    return "Command not found for the given question."
+        for keyword in key.split():
+            if keyword.lower() in question.lower():
+                matching_commands.append(value)
+                break
+    
+    return matching_commands if matching_commands else ["Command not found for the given question."]
+
 
 # Function to handle Unix file paths
 def convert_unix_path(path):
@@ -33,14 +39,9 @@ def main():
         if user_input.lower() == 'exit':
             break
 
-        command = convert_to_command(user_input, training_data)
-        if command.startswith("getting started"):
-            print(convert_unix_path(command))
-        else:
-            print(command)
+        matching_commands = convert_to_command(user_input, training_data)
+        
+        print("\n".join(matching_commands))
 
 if __name__ == "__main__":
     main()
-
-
-
