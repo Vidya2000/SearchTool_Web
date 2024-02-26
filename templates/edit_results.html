@@ -56,13 +56,30 @@
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+
+        .return-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .return-btn:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 <body>
     <h1>Edit Results for {{ query }}</h1>
     
     <div class="form-container">
-        <form method="post" action="{{ url_for('edit_results', query=query) }}">
+        <form method="post" action="{{ url_for('edit_results') }}">
+            <input type="hidden" name="search" value="{{ query }}">
             <label for="modified_query">Modified Query:</label>
             <input type="text" id="modified_query" name="modified_query" value="{{ query }}" required>
             
@@ -71,6 +88,9 @@
             <br>
             <input type="submit" name="save_to_search_history" value="Save">
         </form>
+        
+        
+        <a href="{{ url_for('hello_world') }}" class="return-btn">Return</a>
     </div>
 </body>
 </html>

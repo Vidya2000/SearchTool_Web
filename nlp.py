@@ -1,29 +1,84 @@
 import spacy
 import random
 from spacy.training.example import Example
-import subprocess
+import shutil
 import os
 
 # Subprocess command to execute training_model.py
-training_data_command = ["python", "training_model.py"]
+# training_data_command = ["python", "training_model.py"]
 
-try:
-    # Execute the subprocess command and capture output
-    training_data_output = subprocess.check_output(training_data_command, text=True)
-    print("Subprocess Output:", training_data_output)
-except subprocess.CalledProcessError as e:
-    print("Error:", e)
-    print("Command returned non-zero exit status.")
-    print("Output:", e.output)  # Print any error output
+# try:
+#     # Execute the subprocess command and capture output
+#     training_data_output = subprocess.check_output(training_data_command, text=True)
+#     print("Subprocess Output:", training_data_output)
+# except subprocess.CalledProcessError as e:
+#     print("Error:", e)
+#     print("Command returned non-zero exit status.")
+#     print("Output:", e.output)  
 
-# Construct the model path dynamically
-output_directory = os.path.join(os.getenv('USERPROFILE'), 'Searchtool_Web')
-model_name = "training_model"
-model_path = os.path.join(output_directory, model_name)
 
-# Load the saved model
-print("Loading model from:", model_path)
-nlp = spacy.load(model_path)
+def train_ner(file_path):
+    # Check if the output directory exists, if not, create it
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory)
+
+    # Load a blank English model
+    nlp = spacy.blank("en")
+
+    # Check if the user file exists in the output directory, if not, create it
+    user_file_path = os.path.join(output_directory, "usersfile.txt")
+    if not os.path.exists(user_file_path):
+        with open(user_file_path, "w") as user_file:
+            print("User file created successfully")
+
+    # Copy the production file from the installer location to the output directory
+    production_file_path = "training_data.txt"
+    if os.path.exists(production_file_path):
+        shutil.copy(production_file_path, output_directory)
+        print("Production file copied successfully")
+    else:
+        print("Production file not found. Please specify the correct path.")
+
+    # Load training data from text file
+    TRAINING_DATA = []
+    with open(file_path, "r") as file:
+        for line in file:
+            line = line.strip()
+            if line:
+                text, label = line.split("@@")  # Split text and label using @@
+                text = text.strip()  # Remove leading and trailing whitespaces
+                label = label.strip()  # Remove leading and trailing whitespaces
+                entities = [(0, len(text), label)] 
+                TRAINING_DATA.append((text, {"entities": entities}))
+
+    # Add ner component to the pipeline
+    ner = nlp.add_pipe("ner")
+
+    # Add labels to the ner component
+    for _, annotations in TRAINING_DATA:
+        for ent in annotations.get("entities"):
+            ner.add_label(ent[2])
+
+    # Train the ner component
+    random.shuffle(TRAINING_DATA)
+    train_data = []
+    for text, annotations in TRAINING_DATA:
+        doc = nlp.make_doc(text)
+        example = Example.from_dict(doc, annotations)
+        train_data.append(example)
+
+    nlp.begin_training()
+    for _ in range(10): 
+        random.shuffle(train_data)
+        losses = {}
+        for example in train_data:
+            nlp.update([example], losses=losses)
+
+    # Save the model in the output directory with a specified model name
+    model_name = "training_model"
+    output_model_path = os.path.join(output_directory, model_name)
+    nlp.to_disk(output_model_path)
+    print("Model saved successfully:", output_model_path)
 
 
 # Load training data from text file
@@ -47,10 +102,11 @@ def search(input_text, data):
             matches.append((text, rest))
     return matches
 
+
 def main():
     file_choice = input("Enter 'P' to search from production file or 'U' to search from user file: ").lower()
     if file_choice == 'p':
-        file_path = r"C:\Searchtool_Web\training_data.txt"
+        file_path = os.path.join(output_directory, "training_data.txt")
         TRAINING_DATA = load_data(file_path)
         while True:
             user_input = input("Enter Text or Type 'exit' to Quit: ")
@@ -76,7 +132,7 @@ def main():
             else:
                 print("Invalid choice. Please enter a valid number.")
     elif file_choice == 'u':
-        file_path = r"C:\Searchtool_Web\usersfile.txt"
+        file_path = os.path.join(output_directory, "usersfile.txt")
         TRAINING_DATA = load_data(file_path)
         while True:
             user_input = input("Enter Text or Type 'exit' to Quit: ")
@@ -157,4 +213,17 @@ def main():
 
 
 if __name__ == "__main__":
+    output_directory = os.path.join(os.getenv('USERPROFILE'), 'Searchtool_Web')
+    # Train using production file
+    train_ner(output_directory+"\\training_data.txt")
+
+    # Train using user file
+    train_ner(output_directory+"\\usersfile.txt")
+
+    model_name = "training_model"
+    model_path = os.path.join(output_directory, model_name)
+
+    # Load the saved model
+    print("Loading model from:", model_path)
+    nlp = spacy.load(model_path)
     main()
