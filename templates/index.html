@@ -99,7 +99,7 @@
 
     </nav>
 
-    <form id="searchform" action="{{ url_for('save_search') }}" method="post">
+    <form id="searchform" action="{{ url_for('edit_results') }}" method="post">
         <div class="search-container">
             <div class="search-box transparent">
                 <i class='bx bx-search icon'></i>
@@ -112,7 +112,7 @@
             <div class="expanded-buttons" id="expanded-buttons">
                 <input class="btn search-button no-underline" type="button" id="saveButton" value="Save" onclick="saveAction()">
                 <input class="btn search-button no-underline" type="button" id="resetButton" value="Reset" onclick="resetWebsite()">
-                <input class="btn search-button no-underline" type="button" id="removeButton" value="Remove" onclick="removeSearch()">
+                <input class="btn search-button no-underline" type="submit" id="removeButton" name="removeButton" value="Remove">
                 <a class="no-underline" href="static/SearchTool.xlsm" download>Download Excel</a>
             </div>
         </div>
@@ -195,8 +195,6 @@
                 });
             });
 
-
-
             function saveAction() {
                 var query = document.getElementsByName("search")[0].value;
                 var results = document.getElementById("searchResults").innerHTML;
@@ -204,11 +202,10 @@
                 document.getElementById("queryInput").value = query;
                 document.getElementById("resultsInput").value = results;
 
-                // Change the method to POST and submit the form
-                document.getElementById("searchform").method = "post";
+                // Change the action to edit_results and submit the form
+                document.getElementById("searchform").action = "{{ url_for('edit_results') }}";
                 document.getElementById("searchform").submit();
             }
-
 
             function resetWebsite() {
                 fetch("/reset", {
@@ -226,9 +223,6 @@
             function removeSearch() {
                 var query = document.getElementsByName("search")[0].value;
 
-                // Assuming you have an element with the ID "queryInput" in your HTML
-                document.getElementById("queryInput").value = query;
-
                 fetch("/remove_search", {
                     method: "POST",
                     body: new URLSearchParams({
@@ -236,20 +230,29 @@
                     })
                 })
                 .then(function(response) {
-                    return response.text();
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to remove search');
+                    }
                 })
-                .then(function(message) {
+                .then(function(data) {
                     var successMessage = document.getElementById("successMessage");
                     successMessage.style.display = "block";
-                    successMessage.innerText = message;
+                    successMessage.innerText = data.message;
 
-                    // Reload the page after removal
-                    window.location.reload();
+                    if (data.clear_results) {
+                        // Remove the deleted search result from the search results section
+                        var searchResultElement = document.getElementById("searchResult");
+                        searchResultElement.remove();
+                    }
                 })
                 .catch(function(error) {
                     console.error(error);
+                    // Handle error here
                 });
             }
+
 
             function displayResults(results) {
                 var resultsContainer = document.getElementById("searchResults");

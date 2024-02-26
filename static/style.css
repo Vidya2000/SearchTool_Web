@@ -465,16 +465,19 @@ body.dark .home .text{
     background-color: var(--primary-color-light);
 }
 
-/* Styles for the toggle button container */
+/* Styles for the search button container */
 .button-container {
     position: fixed;
-    top: 350px;
-    right: 13%; /* Increase the right value to move buttons to the left */
+    top: 50%;
+    right: 13%; /* Adjust the right value as needed */
+    transform: translateY(-50%);
     z-index: 998;
     display: flex;
+    align-items: center;
 }
 
-.button-container .search-button {
+.button-container .search-button,
+.button-container .expand-button {
     background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
     color: white;
     border: none;
@@ -482,15 +485,15 @@ body.dark .home .text{
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
-    margin-right: 12px;
+    margin-right: 12px; /* Adjust margins as needed */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.button-container .search-button:hover {
+.button-container .search-button:hover,
+.button-container .expand-button:hover {
     background: rgba(0, 0, 0, 0.6); /* Darken the background on hover */
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
 }
-
 
 .expanded-buttons {
     display: none;
