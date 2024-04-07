@@ -4,6 +4,7 @@ import os
 import pandas as pd
 from dotenv import load_dotenv
 
+
 app = Flask(__name__)
 
 load_dotenv()
