@@ -1,11 +1,13 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect, url_for
 import pymysql
 import os
 import pandas as pd
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 load_dotenv()
 
@@ -24,11 +26,13 @@ def create_connection():
 @app.route('/perform_search', methods=['GET'])
 def search_results():
     connection = create_connection()
-    to_search = request.form.get('search_input')
+    to_search = request.args.get('search_input')
+    print(f"Search query: {to_search}")
     try:
         with connection.cursor() as cursor:
             cursor.execute(f"""SELECT * FROM search WHERE search.state !='Deleted' AND search.query LIKE '%{to_search}%' ORDER BY search.updated""")
             search_results_data = cursor.fetchall()
+            print(f"Search results: {search_results_data}")
             search_dataframe = pd.DataFrame(search_results_data, columns=[x[0] for x in cursor.description])
             return search_dataframe.to_json(orient="records")
     except Exception as e:
